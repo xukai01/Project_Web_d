@@ -1,0 +1,67 @@
+
+/* Hide all three panels by default */
+.sign-up, 
+.verify-email, 
+.log-in {
+    display: none;
+}
+
+.platform-logo{
+    text-align: center;
+    font-size: 2rem;
+
+}
+.content-panel{
+    height: 60vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 3%;
+    align-items: center;
+}
+
+.active {
+    /* 1. Flexbox for alignment */
+    display: flex !important;
+    flex-direction: column;
+    align-content: center;
+
+    align-items: center; 
+    
+    height: auto; 
+    
+    width: 80%;
+    max-width: 400px; 
+    border: 2px solid green;
+}
+.active-heading{
+    margin: 1%;
+}
+.form-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: 2%;
+    /* gap: 15px;  */
+}
+.input-group label{
+    text-align: center;
+    width: 40%;
+}
+/* .input-group input{
+    width: 30%;
+} */
+.input-group{
+    margin: 2%;
+    display: flex;
+    justify-content: space-evenly;
+}
+.auth-switch{
+    margin-top: 4%;
+    margin-bottom: 2%;
+    text-align: left;
+}
+.btn{
+    width: 40%;
+    margin: auto;
+}

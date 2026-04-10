@@ -1,94 +1,491 @@
-*{
-    margin: 0px;
-}
-body{
-    background: linear-gradient(#6367FF ,#8494FF);
-    height: 100vh;
-    width: 100%;
+/* --- Global Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-.header{
+/* --- Core Variables --- */
+:root {
+  --primary-color: #1E3A8A; /* Adjust this later when you pick your final palette */
+  --text-dark: #333333;
+  --text-light: #888888;
+  --bg-white: #ffffff;
+  --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* --- Layer 0: Map Background --- */
+.map-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #e5e3df; /* Standard Google Maps blank canvas color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute; /* Keeps it strictly in the background */
+  top: 0;
+  left: 0;
+  z-index: -2; 
+}
+
+.map-placeholder-text {
+  color: #a3a3a3;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* --- Layer 1: Top Navigation Container --- */
+.top-nav-layer {
+  position: fixed; /* Floats over the map */
+  top: 0;
+  left: 0;
   width: 100%;
-    height: 11%;
-    margin-top: 1%;
+  padding: 15px 20px;
+  z-index: 100; /* Ensures it stays on top of the map */
+}
+
+/* Logo Styling */
+.app-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: inline;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.8); /* Helps text stand out over complex map areas */
+}
+
+/* Floating Search Pill */
+.search-panel {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-white);
+  border-radius: 50px; /* Makes it a perfectly rounded pill */
+  padding: 8px 15px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 650px; /* Prevents it from getting too wide on desktop/tablets */
+  margin: 0 auto; /* Centers the pill */
+  margin-top: -30px;
+
+}
+
+/* Input Box */
+.search-input {
+  flex-grow: 1; /* Tells the input to take up all remaining space */
+  border: none;
+  outline: none;
+  font-size: 1.2rem;
+  padding: 5px 10px;
+  color: var(--text-dark);
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: var(--text-light);
+}
+
+/* Icon Buttons (Profile, Search, Category) */
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dark);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+/* Give the profile icon a slightly different look to stand out */
+.profile-btn i {
+  color: var(--primary-color);
+  font-size: 1.4rem;
+}
+
+/* Hover effects for when testing on a laptop */
+.icon-btn:hover {
+  color: var(--primary-color);
+}
+
+/* Small vertical line between search and categories */
+.divider {
+  height: 24px;
+  width: 1px;
+  background-color: #dddddd;
+  margin: 0 10px;
+}
+
+
+
+/* schedule */
+/* =========================================================
+   LAYER 2 & 3: HORIZONTAL SCHEDULE BUILDER AND FLOATING ACTIONS
+   ========================================================= */
+
+.bottom-layer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none; /* Let clicks pass through to map */
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bottom-layer > * {
+  pointer-events: auto; /* Enable clicks on inner elements */
+  max-width: 1000px;
+  width: 100%;
+}
+
+.fab-container-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 15px 20px;
+}
+.left-fabs, .right-fabs { display: flex; flex-direction: column; gap: 10px; }
+
+.fab-btn {
+  width: 50px; height: 50px;
+  border-radius: 25px;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  border: none; font-size: 1.2rem;
+  box-shadow: var(--shadow-md); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, background 0.2s, color 0.2s;
+}
+.fab-btn:hover { transform: scale(1.05); background: var(--primary-color); color: var(--bg-white); }
+.add-action-btn { background: #10B981; color: white; }
+.add-action-btn:hover { background: #059669; color: white;}
+
+.alert-pill {
+  background: var(--bg-white); padding: 8px 16px; border-radius: 20px;
+  font-size: 0.9rem; font-weight: 600; color: #334155;
+  box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px;
+}
+.alert-pill i { color: #f59e0b; }
+
+.prof-status-pill {
+   background: var(--bg-white); padding: 8px 16px; border-radius: 20px;
+   font-size: 0.9rem; font-weight: 600; color: #334155;
+   box-shadow: var(--shadow-md); display: inline-flex;
+}
+
+/* iOS Toggle Switch */
+.ios-switch-label {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+}
+.ios-switch-input { display: none; }
+.ios-switch-slider {
+  position: relative; width: 36px; height: 20px; background-color: #10B981;
+  border-radius: 20px; transition: background-color 0.3s; flex-shrink: 0;
+}
+.ios-switch-slider::after {
+  content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+  background-color: white; border-radius: 50%; transition: transform 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.ios-switch-input:checked + .ios-switch-slider { background-color: #f43f5e; }
+.ios-switch-input:checked + .ios-switch-slider::after { transform: translateX(16px); }
+
+.horizontal-builder-wrapper {
+  background: #f8fafc;
+  padding: 15px 15px; /* Removed excess bottom padding */
+  border-radius: 20px 20px 0 0; /* Bottom sheet look */
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+  width: 100%;
+  transition: transform 0.3s ease-out;
+}
+
+/* @media for desktop tweaks */
+@media (min-width: 768px) {
+  .horizontal-builder-wrapper {
+    border-radius: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    width: calc(100% - 40px);
+  }
+}
+
+/* --- Toggles & Tabs --- */
+.top-panel-toggle {
+  margin: 15px auto 0 auto;
+  display: flex;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 30px;
+  padding: 5px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: fit-content;
+}
+.top-panel-toggle label {
+  padding: 8px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+.top-panel-toggle input:checked + label {
+  background: var(--primary-color);
+  color: var(--bg-white);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+}
+.top-panel-toggle input { display: none; }
+
+.bottom-sheet-header {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-left-btn, .header-right-btn {
+  font-weight: bold;
+}
+.header-left-btn {
+  color: #64748b;
+  font-size: 1rem;
+}
+.save-schedule-btn {
+  background: var(--primary-color);
+  color: var(--bg-white);
+  border: none;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.weekday-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+.day-tab {
+  padding: 8px 15px; border: 1px solid #cbd5e1; background: var(--bg-white); border-radius: 6px; cursor: pointer; white-space: nowrap;
+}
+.day-tab.active { background: #eff6ff; border-color: var(--primary-color); color: var(--primary-color); font-weight: bold; }
+
+.create-new-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.huge-create-btn {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px dashed var(--primary-color);
+  font-size: 1.2rem;
+  padding: 30px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 300px;
+}
+.huge-create-btn:hover { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+.huge-create-btn i { font-size: 2.5rem; margin-bottom: 10px; color: var(--primary-color); }
+
+.edit-day-btn {
+  background: var(--bg-white); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: auto;
+}
+
+/* --- Horizontal Track --- */
+.schedule-scroll-area {
+  display: flex; overflow-x: auto; gap: 20px; padding-bottom: 20px; align-items: stretch;
+}
+.schedule-scroll-area::-webkit-scrollbar { height: 8px; }
+.schedule-scroll-area::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+/* --- The Cards --- */
+.class-frame {
+  flex: 0 0 300px; /* Forces cards to be exactly 300px wide */
+  background: var(--bg-white); border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+}
+
+.frame-header {
+  display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; border-radius: 8px 8px 0 0; font-weight: bold; color: #475569;
+}
+
+/* Button colors specific to the cards */
+.icon-btn.refresh:hover { color: #3b82f6; } 
+.icon-btn.delete:hover { color: #ef4444; } 
+
+.frame-body {
+  padding: 15px; display: flex; flex-direction: column; gap: 15px;
+}
+.frame-input {
+  width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem;
+}
+.time-row { display: flex; gap: 10px; }
+.time-row input { flex: 1; }
+
+.add-class-card {
+  flex: 0 0 300px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 3rem; color: #cbd5e1; cursor: pointer; background: transparent; transition: all 0.2s; min-height: 200px;
+}
+.add-class-card:hover { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+
+/* --- View Mode Card Styling (Radio Button Behavior) --- */
+.class-frame.view-mode {
+  cursor: pointer; transition: all 0.2s ease; border: 2px solid transparent;
+}
+.class-frame.view-mode:hover {
+  transform: translateY(-2px); box-shadow: var(--shadow-md);
+}
+.class-frame.view-mode.selected {
+  border-color: #10B981; background: #ecfdf5;
+}
+.view-text { display: block; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 8px; font-weight: 500;}
+.view-time { color: var(--text-light); font-size: 0.85rem; }
+.class-frame.view-mode .frame-input, 
+.class-frame.view-mode .icon-btn { display: none; } /* Hides inputs when viewing */
+
+/* --- Footer (Removed because buttons moved to header) --- */
+
+/* =========================================================
+   MOBILE RESPONSIVENESS (Mobile-First / Max-Width Overrides)
+   ========================================================= */
+@media (max-width: 768px) {
+  /* 1. Header Fix & Dominance */
+  .top-nav-layer {
+    padding: 15px 10px 5px 10px; /* Safe-area padding to prevent logo cut-off */
+    height: auto;
+    max-height: none;
     display: flex;
     flex-direction: column;
-    align-items: center;
-
-}
-.header-logo{
-    font-family:  sans-serif;
-    color: white;
-    font-size: 25px;
-    font-weight: 700;
-}
-.header-bar{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 80%;
-    width: 98%;
-    border-radius: 12px;
-    background-color: #C9BEFF;
-    /* border: 1px solid #b6a8fc; */
-}
-.header-profile{
-    height: 75%;
-    font-size: 27px;
+    justify-content: center;
+    align-items: stretch;
+    gap: 5px;
+  }
+  .app-logo {
+    font-size: 1.1rem;
+    margin-bottom: 0;
     text-align: center;
-    padding-top: 3px;
-    margin: auto;
-    width: 3%;
-    border-radius: 50%;
-    background-color: #f7e6f6;
-    border: 4px solid #f4bcf1;
-}
-.header-search{
-    height: 80%;
-    width: 60%;
-    display: flex;
-    align-items: center;
-    margin-right: 25%;
-    background-color: #FE9EC7;
-    border-radius: 8px;
-}
-.header-search-box{
-    height: 80%;
-    width: 93%;
-    font-size: 20px;
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-    background-color: #f7e6f6;
-    border: 4px solid #FE9EC7;
-    border-right: none;
-}
-.header-search-icon
-{
-    background-color: transparent;
-    border: none;
-  font-size: 2em;
-}
-.schedule{
-        height: 12%;
-    width: 90%;
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: row;
-    align-items: center;
-}
-.schedule input{
-    display:none;
-}
+  }
+  .search-panel {
+    margin-top: 0;
+    padding: 4px 10px;
+    height: 35px;
+    max-width: 100%;
+  }
+  .search-input {
+    font-size: 0.85rem;
+    padding: 2px 5px;
+  }
+  .icon-btn {
+    font-size: 1rem;
+    padding: 2px;
+  }
 
-.schedule label{
-    /* padding:10px 20px; */
-    border-radius:6px;
-    font-size:1.2em;
-    cursor:pointer;
-    color:white;
-}
+  /* 2. Compact Bottom Sheet (45vh max, hugged height) */
+  .horizontal-builder-wrapper {
+    height: auto;
+    max-height: 45vh;
+    padding: 12px 10px 10px 10px; /* Removed extra padding to hug content */
+    border-radius: 15px 15px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-.schedule input:checked + label{
-    font-size:1.8em;
-    background-color:#FE9EC7 ;
+  /* 3. Center Toggles */
+  .top-panel-toggle {
+    margin-top: 10px;
+    padding: 3px;
+    border-radius: 20px;
+  }
+  .top-panel-toggle label {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+  }
+
+  /* 4. Compact Components within constraint */
+  .bottom-sheet-header {
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .weekday-tabs { padding-bottom: 2px; }
+  .day-tab {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+  .edit-day-btn {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+  }
+  .save-schedule-btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  .huge-create-btn {
+    padding: 20px;
+    font-size: 1rem;
+  }
+  .huge-create-btn i { font-size: 2rem; }
+  
+  .schedule-scroll-area {
+    padding-bottom: 5px;
+    gap: 10px;
+  }
+  
+  .class-frame {
+    flex: 0 0 200px;
+  }
+  .add-class-card {
+    flex: 0 0 200px;
+    min-height: 80px;
+    font-size: 1.5rem;
+  }
+  .frame-header {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  .frame-body {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  .view-text {
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+  }
+  .view-time {
+    font-size: 0.7rem;
+  }
+  .frame-input {
+    padding: 4px;
+    font-size: 0.75rem;
+  }
+  .builder-footer {
+    display: none;
+  }
+
+  /* Adjust FABs slightly for mobile */
+  .fab-container-wrapper {
+    padding: 5px 10px;
+  }
+  .fab-btn {
+    width: 40px; height: 40px;
+    font-size: 1rem;
+  }
+  .alert-pill, .prof-status-pill {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
 }

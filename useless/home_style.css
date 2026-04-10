@@ -1,0 +1,108 @@
+*{
+    margin: 0px;
+}
+body{
+    background: linear-gradient(#6367FF ,#8494FF);
+    height: 100vh;
+    width: 100%;
+}
+
+.header{
+  width: 100%;
+    height: 11%;
+    margin-top: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.header-logo{
+    font-family:  sans-serif;
+    color: white;
+    font-size: 25px;
+    font-weight: 700;
+}
+.header-bar{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 80%;
+    width: 98%;
+    border-radius: 12px;
+    background-color: #C9BEFF;
+}
+.header-profile{
+    height: 75%;
+    font-size: 27px;
+    text-align: center;
+    padding-top: 3px;
+    margin: auto;
+    width: 3%;
+    border-radius: 50%;
+    background-color: #f7e6f6;
+    border: 4px solid #f4bcf1;
+}
+.header-search{
+    height: 80%;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    margin-right: 25%;
+    background-color: #FE9EC7;
+    border-radius: 8px;
+}
+.header-search-box{
+    height: 80%;
+    width: 93%;
+    font-size: 20px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    background-color: #f7e6f6;
+    border: 4px solid #FE9EC7;
+    border-right: none;
+}
+.header-search-icon
+{
+    background-color: transparent;
+    border: none;
+  font-size: 2em;
+}
+.schedule{
+        height: 12%;
+    width: 90%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    align-items: center;
+}
+.schedule input{
+    display:none;
+}
+
+.schedule label{
+    /* padding:10px 20px; */
+    border-radius:6px;
+    font-size:1.2em;
+    cursor:pointer;
+    color:white;
+}
+
+.schedule input:checked + label{
+    font-size:1.8em;
+    background-color:#FE9EC7 ;
+}
+.day-schedule{
+        display: flex;
+        flex-direction: row;
+    justify-content: space-evenly;
+    align-content: center;
+    height: 10%;
+    width: 90%;
+    border-radius: 12px;
+    background-color: #C9BEFF;
+}
+.day-class{
+    /* height: 80%; */
+        font-size:1.8em;
+    background-color:#FE9EC7 ;
+}

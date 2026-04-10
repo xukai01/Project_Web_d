@@ -3,48 +3,124 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Map My Campus - Dashboard</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="home_style.css">
-    <title>home</title>
 </head>
 
 <body>
-    <header class="header">
-        <div class="header-logo"> .......</div>
-        <div class="header-bar">
-            <i class=" header-profile fa-solid fa-user" style="color: #6367ff;"></i>
-            <div class="header-search">
-                <input class="header-search-box" placeholder=" Search a location . ."></input>
-                <button class="header-search-icon"><i class="fa-solid fa-magnifying-glass-location"
-                        style="color: #6367ff;"></i></button>
-            </div>
+
+    <div class="map-container">
+        <div class="map-placeholder-text">Google Maps API Goes Here</div>
+    </div>
+
+    <header class="top-nav-layer">
+        <h1 class="app-logo">
+            <i class="fa-solid fa-map-location-dot"></i> Map My Campus
+        </h1>
+
+        <div class="search-panel">
+            <button class="icon-btn profile-btn" aria-label="Profile">
+                <i class="fa-solid fa-circle-user"></i>
+            </button>
+
+            <input type="text" class="search-input" placeholder="Search rooms, labs, professors...">
+
+            <button class="icon-btn search-btn" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+
+            <div class="divider"></div>
+
+            <button class="icon-btn category-btn" aria-label="Categories">
+                <i class="fa-solid fa-layer-group"></i>
+            </button>
+        </div>
+
+        <div class="panel-toggle top-panel-toggle">
+            <input type="radio" id="toggle-schedule" name="main-toggle" checked>
+            <label for="toggle-schedule">Schedule</label>
+
+            <input type="radio" id="toggle-events" name="main-toggle">
+            <label for="toggle-events">Events</label>
         </div>
     </header>
-    <div class="schedule">
-        <input type="radio" id="mon" name="weekend" value="Monday">
-        <label for="mon">Monday</label>
 
-        <input type="radio" id="tue" name="weekend" value="Tuesday">
-        <label for="tue">Tuesday</label>
+    <div class="bottom-layer">
+        <div class="fab-container-wrapper">
+            <div class="left-fabs">
+                <div class="alert-pill">
+                    <i class="fa-solid fa-bell"></i> Next: OS Lab in 10 mins
+                </div>
+                <div class="prof-status-pill">
+                    <label class="ios-switch-label" title="Toggle Availability">
+                        <input type="checkbox" id="prof-toggle" class="ios-switch-input">
+                        <span class="ios-switch-slider"></span>
+                        <span class="status-text">Available</span>
+                    </label>
+                </div>
+            </div>
+            <div class="right-fabs">
+                <button class="fab-btn recenter-btn" aria-label="Recenter Map" title="Recenter Map">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                </button>
+                <button class="fab-btn add-action-btn" aria-label="Create/Add" title="Create/Add Event">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
 
-        <input type="radio" id="wed" name="weekend" value="Wednesday">
-        <label for="wed">Wednesday</label>
+        <div class="horizontal-builder-wrapper">
 
-        <input type="radio" id="thr" name="weekend" value="Thrusday">
-        <label for="thr">Thrusday</label>
+            <div class="bottom-sheet-header" id="bottom-sheet-header">
+                <div class="header-top-row">
+                    <button class="icon-btn header-left-btn" id="exit-edit-btn" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i> Cancel
+                    </button>
+                    <button class="icon-btn edit-day-btn" id="edit-mode-btn" title="Edit Schedule">
+                        <i class="fa-solid fa-pen"></i> Edit
+                    </button>
+                    <button class="save-schedule-btn header-right-btn" id="save-btn" style="display: none;">
+                        Save Changes
+                    </button>
+                </div>
+                <div class="weekday-tabs" id="weekday-tabs"></div>
+            </div>
 
-        <input type="radio" id="fri" name="weekend" value="Friday">
-        <label for="fri">Friday</label>
+            <div class="create-new-wrapper" id="create-empty-state" style="display: none;">
+                <button class="huge-create-btn" id="create-new-btn">
+                    <i class="fa-solid fa-plus"></i> <br> Create Schedule
+                </button>
+            </div>
 
-        <input type="radio" id="sat" name="weekend" value="Saturday">
-        <label for="sat">Saturday</label>
+            <div class="schedule-scroll-area" id="schedule-track">
+            </div>
 
-        <input type="radio" id="sun" name="weekend" value="Sunday">
-        <label for="sun">Sunday</label>
+        </div>
+
     </div>
+
+    <!-- <div class="horizontal-builder-wrapper">
+        <h2>Build Monday's Schedule</h2>
+
+        <div class="schedule-scroll-area" id="schedule-track">
+
+            <div class="add-class-card" id="add-class-btn" title="Add a new class">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+
+        </div>
+
+        <div class="builder-footer">
+            <button class="save-schedule-btn" id="save-btn">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Save Schedule
+            </button>
+        </div>
+    </div> -->
+    <script src="home_js.js"></script>
 </body>
 
 </html>
