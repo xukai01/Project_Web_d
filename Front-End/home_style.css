@@ -14,12 +14,42 @@
   --bg-white: #ffffff;
   --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
   --shadow-md: 0 4px 10px rgba(0,0,0,0.15);
+
+  --slow-bg-gradient-color1: #e2e8f0;
+  --slow-bg-gradient-color2: #c7d2fe;
+  --slow-bg-gradient-color3: #bae6fd;
+  --main-desktop-column-width: 440px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  position: fixed;
+  background: linear-gradient(270deg, var(--slow-bg-gradient-color1), var(--slow-bg-gradient-color2), var(--slow-bg-gradient-color3));
+  background-size: 400% 400%;
+  animation: animateGlobalBackgroundGradient 25s ease infinite;
+}
+
+@keyframes animateGlobalBackgroundGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#main-application-column {
+  width: 100vw;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
 }
 
 /* --- Layer 0: Map Background --- */
 .map-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100dvh;
   background-color: #e5e3df; /* Standard Google Maps blank canvas color */
   display: flex;
   align-items: center;
@@ -38,7 +68,7 @@
 
 /* --- Layer 1: Top Navigation Container --- */
 .top-nav-layer {
-  position: fixed; /* Floats over the map */
+  position: absolute; /* Floats over the map */
   top: 0;
   left: 0;
   width: 100%;
@@ -180,6 +210,7 @@
   position: fixed;
   bottom: 0;
   left: 0;
+  right: 0;
   width: 100%;
   pointer-events: none; /* Let clicks pass through to map */
   z-index: 50;
@@ -246,21 +277,48 @@
 .ios-switch-input:checked + .ios-switch-slider::after { transform: translateX(16px); }
 
 .horizontal-builder-wrapper {
-  background: #f8fafc;
-  padding: 15px 15px; /* Removed excess bottom padding */
-  border-radius: 20px 20px 0 0; /* Bottom sheet look */
-  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+  background: transparent;
+  padding: 15px 15px;
   width: 100%;
-  transition: transform 0.3s ease-out;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.horizontal-builder-wrapper.peek-mode {
+  transform: translateY(70%);
+}
+
+.main-card-container {
+  background: var(--bg-white);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+  padding: 15px 15px;
+  width: 100%;
 }
 
 /* @media for desktop tweaks */
-@media (min-width: 768px) {
+@media (min-width: 769px) {
+  #main-application-column {
+    width: 82vw;
+    max-width: 1400px;
+    height: 100dvh;
+    margin: 0 auto;
+    background-color: var(--bg-white);
+    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+    border-radius: 0;
+  }
+
+  .bottom-layer {
+    position: absolute;
+  }
+
   .horizontal-builder-wrapper {
-    border-radius: 15px;
     margin-bottom: 20px;
     padding-bottom: 15px;
     width: calc(100% - 40px);
+  }
+
+  .main-card-container {
+    border-radius: 15px;
   }
 }
 
@@ -297,13 +355,20 @@
 .bottom-sheet-header {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
 }
 .header-top-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
+  background: transparent !important;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 .header-left-btn, .header-right-btn {
   font-weight: bold;
@@ -311,6 +376,12 @@
 .header-left-btn {
   color: #64748b;
   font-size: 1rem;
+  background: var(--bg-white);
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 .save-schedule-btn {
   background: var(--primary-color);
@@ -321,6 +392,7 @@
   font-weight: bold;
   border-radius: 12px;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
 .weekday-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
@@ -355,6 +427,7 @@
 
 .edit-day-btn {
   background: var(--bg-white); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: auto;
+  box-shadow: var(--shadow-sm);
 }
 
 /* --- Horizontal Track --- */
@@ -444,15 +517,22 @@
     padding: 2px;
   }
 
-  /* 2. Compact Bottom Sheet (45vh max, hugged height) */
+  /* 2. Compact Bottom Sheet (45dvh max) */
   .horizontal-builder-wrapper {
     height: auto;
-    max-height: 45vh;
-    padding: 12px 10px 10px 10px; /* Removed extra padding to hug content */
+    max-height: 45dvh;
+    padding: 12px 10px 0 10px;
     border-radius: 15px 15px 0 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+  }
+  .main-card-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-bottom: max(15px, env(safe-area-inset-bottom));
   }
 
   /* 3. Center Toggles */
@@ -491,7 +571,9 @@
   .huge-create-btn i { font-size: 2rem; }
   
   .schedule-scroll-area {
-    padding-bottom: 5px;
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
     gap: 10px;
   }
   

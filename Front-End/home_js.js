@@ -21,6 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('save-btn');
   const emptyStateWrapper = document.getElementById('create-empty-state');
   const bsHeader = document.getElementById('bottom-sheet-header');
+  const topRow = document.getElementById('header-top-row');
+  const horizontalBuilderWrapper = document.querySelector('.horizontal-builder-wrapper');
+
+  // Peek Mode Toggle logic
+  function togglePeekMode(e) {
+    // Prevent toggle if the user clicks a tab or functional button
+    if (e.target.closest('button')) return;
+    horizontalBuilderWrapper.classList.toggle('peek-mode');
+  }
+
+  bsHeader.addEventListener('click', togglePeekMode);
+  topRow.addEventListener('click', togglePeekMode);
 
   function startEditing() {
     isEditMode = true;
@@ -91,11 +103,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Empty vs Exists global view state
     if (!hasAnySchedule && !isEditMode) {
       bsHeader.style.display = 'none';
+      topRow.style.display = 'none';
       track.style.display = 'none';
       emptyStateWrapper.style.display = 'flex';
       return;
     } else {
       bsHeader.style.display = 'flex';
+      topRow.style.display = 'flex';
       track.style.display = 'flex';
       emptyStateWrapper.style.display = 'none';
     }

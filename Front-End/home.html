@@ -13,74 +13,74 @@
 
 <body>
 
-    <div class="map-container">
-        <div class="map-placeholder-text">Google Maps API Goes Here</div>
-    </div>
-
-    <header class="top-nav-layer">
-        <h1 class="app-logo">
-            <i class="fa-solid fa-map-location-dot"></i> Map My Campus
-        </h1>
-
-        <div class="search-panel">
-            <button class="icon-btn profile-btn" aria-label="Profile">
-                <i class="fa-solid fa-circle-user"></i>
-            </button>
-
-            <input type="text" class="search-input" placeholder="Search rooms, labs, professors...">
-
-            <button class="icon-btn search-btn" aria-label="Search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-
-            <div class="divider"></div>
-
-            <button class="icon-btn category-btn" id="filter-btn" aria-label="Map Filters" title="Map Filters">
-                <i class="fa-solid fa-layer-group"></i>
-            </button>
-
-            <div class="categories-dropdown" id="categories-dropdown">
-                <!-- Categories will be dynamically injected here -->
-            </div>
+    <div id="main-application-column">
+        <div class="map-container">
+            <div class="map-placeholder-text">Google Maps API Goes Here</div>
         </div>
 
-        <div class="panel-toggle top-panel-toggle">
-            <input type="radio" id="toggle-schedule" name="main-toggle" checked>
-            <label for="toggle-schedule">Schedule</label>
+        <header class="top-nav-layer">
+            <h1 class="app-logo">
+                <i class="fa-solid fa-map-location-dot"></i> Map My Campus
+            </h1>
 
-            <input type="radio" id="toggle-events" name="main-toggle">
-            <label for="toggle-events">Events</label>
-        </div>
-    </header>
+            <div class="search-panel">
+                <button class="icon-btn profile-btn" aria-label="Profile">
+                    <i class="fa-solid fa-circle-user"></i>
+                </button>
 
-    <div class="bottom-layer">
-        <div class="fab-container-wrapper">
-            <div class="left-fabs">
-                <div class="alert-pill">
-                    <i class="fa-solid fa-bell"></i> Next: OS Lab in 10 mins
-                </div>
-                <div class="prof-status-pill">
-                    <label class="ios-switch-label" title="Toggle Availability">
-                        <input type="checkbox" id="prof-toggle" class="ios-switch-input">
-                        <span class="ios-switch-slider"></span>
-                        <span class="status-text">Available</span>
-                    </label>
+                <input type="text" class="search-input" placeholder="Search rooms, labs, professors...">
+
+                <button class="icon-btn search-btn" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+                <div class="divider"></div>
+
+                <button class="icon-btn category-btn" id="filter-btn" aria-label="Map Filters" title="Map Filters">
+                    <i class="fa-solid fa-layer-group"></i>
+                </button>
+
+                <div class="categories-dropdown" id="categories-dropdown">
+                    <!-- Categories will be dynamically injected here -->
                 </div>
             </div>
-            <div class="right-fabs">
-                <button class="fab-btn recenter-btn" aria-label="Recenter Map" title="Recenter Map">
-                    <i class="fa-solid fa-location-crosshairs"></i>
-                </button>
-                <button class="fab-btn add-action-btn" aria-label="Create/Add" title="Create/Add Event">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
+
+            <div class="panel-toggle top-panel-toggle">
+                <input type="radio" id="toggle-schedule" name="main-toggle" checked>
+                <label for="toggle-schedule">Schedule</label>
+
+                <input type="radio" id="toggle-events" name="main-toggle">
+                <label for="toggle-events">Events</label>
             </div>
-        </div>
+        </header>
 
-        <div class="horizontal-builder-wrapper">
+        <div class="bottom-layer">
+            <div class="fab-container-wrapper">
+                <div class="left-fabs">
+                    <div class="alert-pill">
+                        <i class="fa-solid fa-bell"></i> Next: OS Lab in 10 mins
+                    </div>
+                    <div class="prof-status-pill">
+                        <label class="ios-switch-label" title="Toggle Availability">
+                            <input type="checkbox" id="prof-toggle" class="ios-switch-input">
+                            <span class="ios-switch-slider"></span>
+                            <span class="status-text">Available</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="right-fabs">
+                    <button class="fab-btn recenter-btn" aria-label="Recenter Map" title="Recenter Map">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                    </button>
+                    <button class="fab-btn add-action-btn" aria-label="Create/Add" title="Create/Add Event">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            </div>
 
-            <div class="bottom-sheet-header" id="bottom-sheet-header">
-                <div class="header-top-row">
+            <div class="horizontal-builder-wrapper">
+
+                <div class="header-top-row" id="header-top-row">
                     <button class="icon-btn header-left-btn" id="exit-edit-btn" style="display: none;">
                         <i class="fa-solid fa-xmark"></i> Cancel
                     </button>
@@ -91,39 +91,27 @@
                         Save Changes
                     </button>
                 </div>
-                <div class="weekday-tabs" id="weekday-tabs"></div>
-            </div>
 
-            <div class="create-new-wrapper" id="create-empty-state" style="display: none;">
-                <button class="huge-create-btn" id="create-new-btn">
-                    <i class="fa-solid fa-plus"></i> <br> Create Schedule
-                </button>
-            </div>
+                <div class="main-card-container">
+                    <div class="bottom-sheet-header" id="bottom-sheet-header">
+                        <div class="weekday-tabs" id="weekday-tabs"></div>
+                    </div>
 
-            <div class="schedule-scroll-area" id="schedule-track">
+                    <div class="create-new-wrapper" id="create-empty-state" style="display: none;">
+                        <button class="huge-create-btn" id="create-new-btn">
+                            <i class="fa-solid fa-plus"></i> <br> Create Schedule
+                        </button>
+                    </div>
+
+                    <div class="schedule-scroll-area" id="schedule-track">
+                    </div>
+                </div>
+
             </div>
 
         </div>
-
     </div>
-
-    <!-- <div class="horizontal-builder-wrapper">
-        <h2>Build Monday's Schedule</h2>
-
-        <div class="schedule-scroll-area" id="schedule-track">
-
-            <div class="add-class-card" id="add-class-btn" title="Add a new class">
-                <i class="fa-solid fa-plus"></i>
-            </div>
-
-        </div>
-
-        <div class="builder-footer">
-            <button class="save-schedule-btn" id="save-btn">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Save Schedule
-            </button>
-        </div>
-    </div> -->
+    
     <script src="home_js.js"></script>
 </body>
 
