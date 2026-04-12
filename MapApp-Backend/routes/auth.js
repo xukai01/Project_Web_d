@@ -173,4 +173,94 @@ router.post('/resend-otp', async (req, res) => {
     }
 });
 
+// ─────────────────────────────────────────────────────────────
+// ROUTE 4: LOGIN
+// POST /api/auth/login
+// Body: { email, password }
+// ─────────────────────────────────────────────────────────────
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    try {
+        const [results] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+        if (results.length === 0) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        const user = results[0];
+
+        // Check password matching
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        // Check if verified
+        if (!user.is_verified) {
+            return res.status(403).json({ message: 'Please verify your email before logging in.' });
+        }
+
+        res.status(200).json({ message: 'Login successful', user: { full_name: user.full_name, email: user.email, user_type: user.user_type } });
+    } catch (err) {
+        console.error('Database error during login:', err);
+        res.status(500).json({ message: 'Database error' });
+    }
+});
+
+// ─────────────────────────────────────────────────────────────
+// ROUTE 5: FORGOT PASSWORD
+// POST /api/auth/forgot-password
+// Body: { email }
+// ─────────────────────────────────────────────────────────────
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+
+    try {
+        const [results] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+        if (results.length === 0) {
+            // For security, do not reveal if email is registered, respond with success
+            return res.status(200).json({ message: 'If an account exists, an email has been sent.' });
+        }
+
+        const user = results[0];
+
+        // Generate a random temporary password (8 characters)
+        const tempPassword = Math.random().toString(36).slice(-8);
+        const password_hash = await bcrypt.hash(tempPassword, 10);
+
+        // Update the password in db
+        await db.query('UPDATE users SET password_hash = ? WHERE email = ?', [password_hash, email]);
+
+        // Send email
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your Password Has Been Reset',
+            html: `
+                <h2>Password Reset</h2>
+                <p>Hello ${user.full_name},</p>
+                <p>We received a request to reset your password. Here is your temporary password:</p>
+                <h1 style="color: red; letter-spacing: 2px;">${tempPassword}</h1>
+                <p>Please log in using this password. We recommend changing it once you log in (if the feature is available).</p>
+                <p>If you did not request this, please contact support immediately.</p>
+            `
+        });
+
+        res.status(200).json({ message: 'If an account exists, an email has been sent.' });
+    } catch (err) {
+        console.error('Database/Email error during forgot-password:', err);
+        res.status(500).json({ message: 'Failed to process request' });
+    }
+});
+
 module.exports = router;

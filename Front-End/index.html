@@ -4,111 +4,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="index_style.css" >
+    <title>Map My Campus - Authentication</title>
+    <!-- Modern Font Option (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index_style.css">
 </head>
 
 <body>
-    <div class="platform-logo">MAP my CAMPUS</div>
-    <div class="content-panel">
-
-<!-- Sign Up  -->
-        <div class="sign-up">
-            <div class="active-heading">Sign Up</div>
-
-            <form id="signup-form" class="form-wrapper">
-
-                <div class="input-group">
-                    <label for="sign-name" class="input-label">Name</label>
-                    <input type="text" id="sign-name" class="input-field" name="name" placeholder="Enter your full name"
-                        required>
-                </div>
-
-                <div class="input-group">
-                    <label for="sign-email" class="input-label">Email</label>
-                    <input type="email" id="sign-email" class="input-field" name="email" placeholder="Enter your email"
-                        required>
-                </div>
-
-                <div class="input-group">
-                    <label for="sign-password" class="input-label">Set Password</label>
-                    <input type="password" id="sign-password" class="input-field" name="password"
-                        placeholder="Create a password" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="sign-confirm-password" class="input-label">Confirm Password</label>
-                    <input type="password" id="sign-confirm-password" class="input-field" name="confirm_password"
-                        placeholder="Confirm your password" required>
-                </div>
-
-                <button type="submit" id="submit-signup-btn" class="btn primary-btn">Sign Up</button>
-
-                <div class="auth-switch">
-                    <span class="auth-switch-text">Already have an account?</span>
-                    <a href="#login" id="link-to-login" class="auth-switch-link">Log In</a>
-                </div>
-
-            </form>
+    <div class="auth-container">
+        <div class="platform-logo">
+            <span class="logo-accent">MAP</span> my CAMPUS
         </div>
+        
+        <div class="content-panel">
 
+            <!-- Sign Up Panel -->
+            <div class="sign-up">
+                <h2 class="active-heading">Create Account</h2>
+                <p class="subtitle-text">Join us to start exploring your campus.</p>
 
-<!-- Verify Email -->
-        <div class="verify-email">
-            <div class="active-heading">Verify Email</div>
+                <form id="signup-form" class="form-wrapper" novalidate>
+                    <div class="input-group">
+                        <label for="sign-name" class="input-label">Full Name</label>
+                        <input type="text" id="sign-name" class="input-field" name="name" placeholder="Enter your full name" required>
+                        <span class="error-msg" id="sign-name-error"></span>
+                    </div>
 
-            <form id="verify-form" class="form-wrapper">
+                    <div class="input-group">
+                        <label for="sign-email" class="input-label">Email Address</label>
+                        <input type="email" id="sign-email" class="input-field" name="email" placeholder="Enter your email" required>
+                        <span class="error-msg" id="sign-email-error"></span>
+                    </div>
 
-                <p class="instruction-text">We've sent a one-time password (OTP) to your email. Please enter it below.
-                </p>
+                    <div class="input-group">
+                        <label for="sign-password" class="input-label">Password</label>
+                        <input type="password" id="sign-password" class="input-field" name="password" placeholder="Create a password" required>
+                        <span class="error-msg" id="sign-password-error"></span>
+                    </div>
 
-                <div class="input-group">
-                    <label for="verify-otp" class="input-label">Enter OTP</label>
-                    <input type="text" id="verify-otp" class="input-field" name="otp" placeholder="Enter 6-digit code"
-                        required pattern="\d{6}" maxlength="6" autocomplete="one-time-code">
-                </div>
+                    <div class="input-group">
+                        <label for="sign-confirm-password" class="input-label">Confirm Password</label>
+                        <input type="password" id="sign-confirm-password" class="input-field" name="confirm_password" placeholder="Confirm your password" required>
+                        <span class="error-msg" id="sign-confirm-error"></span>
+                    </div>
 
-                <div class="button-group">
-                    <button type="button" id="prev-btn" class="btn secondary-btn">Previous</button>
+                    <button type="submit" id="submit-signup-btn" class="btn primary-btn">Sign Up</button>
 
-                    <button type="submit" id="submit-verify-btn" class="btn primary-btn">Verify</button>
-                </div>
+                    <div class="auth-switch">
+                        <span class="auth-switch-text">Already have an account?</span>
+                        <a href="#login" id="link-to-login" class="auth-switch-link">Log In</a>
+                    </div>
+                </form>
+            </div>
 
-            </form>
-        </div>
+            <!-- Verify Email Panel -->
+            <div class="verify-email">
+                <h2 class="active-heading">Verify Email</h2>
+                <p class="subtitle-text">Protecting your account.</p>
 
+                <form id="verify-form" class="form-wrapper" novalidate>
+                    <div class="instruction-box">
+                        <p class="instruction-text">We've sent a 6-digit one-time password (OTP) to your email. Please enter it below.</p>
+                        <p class="timer-text">OTP expires in: <span id="otp-timer">05:00</span></p>
+                    </div>
 
-<!-- log-in -->
-        <div class="log-in">
-            <div class="active-heading">Log In</div>
+                    <div class="input-group">
+                        <label for="verify-otp" class="input-label">Enter OTP</label>
+                        <input type="text" id="verify-otp" class="input-field" name="otp" placeholder="••••••" required pattern="\d{6}" maxlength="6" autocomplete="one-time-code">
+                        <span class="error-msg" id="verify-otp-error"></span>
+                    </div>
 
-            <form id="login-form" class="form-wrapper">
+                    <div class="button-group flex-buttons">
+                        <button type="button" id="prev-btn" class="btn secondary-btn">Back</button>
+                        <button type="submit" id="submit-verify-btn" class="btn primary-btn">Verify</button>
+                    </div>
+                    
+                    <div class="resend-wrapper">
+                        <button type="button" id="resend-otp-btn" class="auth-switch-link" disabled>Resend OTP</button>
+                    </div>
+                </form>
+            </div>
 
-                <div class="input-group">
-                    <label for="login-email" class="input-label">Email</label>
-                    <input type="email" id="login-email" class="input-field" name="email" placeholder="Enter your email"
-                        required>
-                </div>
+            <!-- Log In Panel -->
+            <div class="log-in">
+                <h2 class="active-heading">Welcome Back</h2>
+                <p class="subtitle-text">Please enter your details to sign in.</p>
 
-                <div class="input-group">
-                    <label for="login-password" class="input-label">Password</label>
-                    <input type="password" id="login-password" class="input-field" name="password"
-                        placeholder="Enter your password" required>
-                </div>
+                <form id="login-form" class="form-wrapper" novalidate>
+                    <div class="input-group">
+                        <label for="login-email" class="input-label">Email</label>
+                        <input type="email" id="login-email" class="input-field" name="email" placeholder="Enter your email" required>
+                        <span class="error-msg" id="login-email-error"></span>
+                    </div>
 
-                <button type="submit" id="submit-login-btn" class="btn primary-btn">Log In</button>
+                    <div class="input-group">
+                        <div class="password-label-wrapper">
+                            <label for="login-password" class="input-label">Password</label>
+                            <a href="#forgot" id="link-to-forgot" class="auth-switch-link forget-link">Forgot Password?</a>
+                        </div>
+                        <input type="password" id="login-password" class="input-field" name="password" placeholder="Enter your password" required>
+                        <span class="error-msg" id="login-password-error"></span>
+                    </div>
 
-                <div class="auth-switch">
-                    <span class="auth-switch-text">Don't have an account?</span>
-                    <a href="#signup" id="link-to-signup" class="auth-switch-link">Sign Up</a>
-                </div>
+                    <button type="submit" id="submit-login-btn" class="btn primary-btn">Log In</button>
 
-            </form>
+                    <div class="auth-switch">
+                        <span class="auth-switch-text">Don't have an account?</span>
+                        <a href="#signup" id="link-to-signup" class="auth-switch-link">Sign Up</a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Forgot Password Panel -->
+            <div class="forgot-password">
+                <h2 class="active-heading">Reset Password</h2>
+                <p class="subtitle-text">We'll email you a temporary password to regain access.</p>
+
+                <form id="forgot-form" class="form-wrapper" novalidate>
+                    <div class="input-group">
+                        <label for="forgot-email" class="input-label">Email</label>
+                        <input type="email" id="forgot-email" class="input-field" name="email" placeholder="Enter your registered email" required>
+                        <span class="error-msg" id="forgot-email-error"></span>
+                        <span class="success-msg" id="forgot-email-success"></span>
+                    </div>
+
+                    <button type="submit" id="submit-forgot-btn" class="btn primary-btn">Send Temporary Password</button>
+                    
+                    <div class="auth-switch center-switch">
+                        <a href="#login" id="forgot-to-login" class="auth-switch-link">< Back to Log In</a>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 
-    <script  src="index_js.js">
-    </script>
+    <script src="index_js.js"></script>
 </body>
-
 </html>
