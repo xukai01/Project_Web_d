@@ -1,0 +1,135 @@
+/* admin.css */
+
+:root {
+    /* Change this variable to adjust how far down the Drawing Tools appear */
+    --draw-tool-top-offset: -20vh;
+}
+
+/* --- OVERRIDE STUDENT DASHBOARD UI --- */
+/* Hide the bottom panel, top toggle switch, and fabs (except recenter if we kept it) */
+.top-panel-toggle,
+.horizontal-builder-wrapper 
+{
+    display: none !important;
+}
+
+/* Ensure the left/right fab wrappers in bottom layer don't block anything */
+.left-fabs,
+.add-action-btn {
+    display: none !important;
+}
+
+/* --- ADMIN CREATE BUTTON --- */
+.admin-create-fab {
+    position: absolute;
+    bottom: 40px;
+    left: 20px;
+    /* margin-left: 20; */
+    background-color: #3b82f6;
+    color: white;
+    width: auto;
+    padding: 0 24px;
+    height: 50px;
+    border-radius: 25px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.admin-create-fab:hover {
+    transform: scale(1.05);
+    background-color: #2563eb;
+}
+
+/* Remove old modal overlays since we use Side Panels */
+
+.admin-form {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: hidden;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Cleaned up unused .two-col logic */
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.input-group input, 
+.input-group select, 
+.input-group textarea {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus, 
+.input-group select:focus, 
+.input-group textarea:focus {
+    border-color: #3b82f6;
+}
+
+.admin-submit-btn {
+    margin-top: 10px;
+    background: #10b981;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.admin-submit-btn:hover {
+    background: #059669;
+}
+
+/* Position Mapbox Controls Down From Top Left using Variable */
+/* .mapboxgl-ctrl-group,
+.maplibregl-ctrl-group {
+    margin-top: var(--draw-tool-top-offset) !important;
+    margin-left: 10px !important;
+} */
+ .mapboxgl-ctrl-group,
+.maplibregl-ctrl-top-left {
+    top: 100px !important;  /* Pushes it down below your top nav */
+    left: 12px !important; /* Pushes it right, past your sidebar */
+}
+
+
+body:not(.admin-draw-mode) .mapboxgl-ctrl-group {
+    display: none !important;
+}
+
+/* Enlarge Mapbox Draw Tools Significantly */
+.mapboxgl-ctrl-group button {
+    width: 60px !important;
+    height: 60px !important;
+    cursor: pointer !important;
+}
+
+.mapboxgl-ctrl-group button span {
+    transform: scale(1.6);
+}

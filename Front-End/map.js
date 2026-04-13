@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom: 16
     });
 
+    // Expose map globally for admin extensions
+    window.myMap = myMap;
+
     // Configurable Constraint Variables
     const MIN_ZOOM_LEVEL = 14;      // Controls how far out the user can zoom
     const MAX_BOUNDS_OFFSET = 0.03; // Radius in degrees (~3.3km) the user can drag away from their location

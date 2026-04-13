@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://10.240.167.136:3000'; // Change to live cloud URL when deployed to production (e.g., Vercel)
+const API_BASE_URL = 'http://localhost:5000'; // Change to live cloud URL when deployed to production (e.g., Vercel)
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -484,5 +484,23 @@ document.addEventListener('DOMContentLoaded', () => {
   //       dropdown.innerHTML = '<div class="loading-text">Filters temporarily unavailable (Server offline)</div>';
   //     });
   // }
+  // 9. ISOMETRIC FLOOR LEGEND LOGIC
+  const floorLayers = document.querySelectorAll('.cube-layer');
+  const floorTooltip = document.getElementById('floor-tooltip');
+
+  if (floorLayers.length > 0 && floorTooltip) {
+      floorLayers.forEach(layer => {
+          layer.addEventListener('mouseenter', (e) => {
+              const floorName = e.target.getAttribute('data-floor');
+              if (floorName) {
+                  floorTooltip.textContent = floorName;
+                  floorTooltip.style.opacity = '1';
+              }
+          });
+          layer.addEventListener('mouseleave', () => {
+              floorTooltip.style.opacity = '0';
+          });
+      });
+  }
 
 });

@@ -19,8 +19,15 @@
   --slow-bg-gradient-color2: #c7d2fe;
   --slow-bg-gradient-color3: #bae6fd;
   --main-desktop-column-width: 440px;
-  --desktop-edge-fade: 2%;
+  --desktop-edge-fade: 0%;
   --desktop-column-width: 80vw;
+
+  /* Floor Legend Variables (Customize these colors to match map levels!) */
+  --floor-5-color: #a855f7; /* Purple */
+  --floor-4-color: #ec4899; /* Pink */
+  --floor-3-color: #f43f5e; /* Rose */
+  --floor-2-color: #f97316; /* Orange */
+  --floor-1-color: #3b82f6; /* Blue (Ground) */
 }
 
 html, body {
@@ -631,5 +638,99 @@ html, body {
   .alert-pill, .prof-status-pill {
     padding: 4px 10px;
     font-size: 0.75rem;
+  }
+}
+
+/* =========================================================
+   ISOMETRIC FLOOR LEGEND (3D Cubes)
+   ========================================================= */
+.building-legend {
+  position: absolute;
+  top: 135px;
+  left: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.legend-tooltip {
+  position: absolute;
+  top: 10px;
+  left: 60px; /* Position to the right of the cubes */
+  background: var(--bg-white);
+  color: var(--text-dark);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* Tooltip caret */
+.legend-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  transform: translateY(-50%);
+  border-width: 6px 6px 6px 0;
+  border-style: solid;
+  border-color: transparent var(--bg-white) transparent transparent;
+}
+
+.cube-stack {
+  position: relative;
+  width: 40px;
+  height: 80px; 
+}
+
+/* The top face of the cube */
+.cube-layer {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: var(--floor-color);
+  left: 7.5px; /* Center in 40px */
+  transform: rotateX(60deg) rotateZ(45deg);
+  transform-style: preserve-3d;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
+  /* Box shadow for a bit of base ambient occlusion */
+  box-shadow: -1px 1px 0px rgba(0,0,0,0.1);
+}
+
+.cube-layer:hover {
+  filter: brightness(1.2);
+  transform: rotateX(60deg) rotateZ(45deg) translateZ(10px) scale(1.1);
+  z-index: 10 !important;
+}
+
+/* Positioning each floor vertically */
+.cube-layer:nth-child(5) { bottom: 0px; }  /* Ground */
+.cube-layer:nth-child(4) { bottom: 12px; } /* 1st */
+.cube-layer:nth-child(3) { bottom: 24px; } /* 2nd */
+.cube-layer:nth-child(2) { bottom: 36px; } /* 3rd */
+.cube-layer:nth-child(1) { bottom: 48px; } /* 4th */
+
+/* Minor adjustments for mobile styling of the legend tooltip */
+@media (max-width: 768px) {
+  .building-legend {
+     top: 140px; 
+     left: 20px;
+  }
+  .legend-tooltip {
+     top: -30px;
+     left: -20px;
+  }
+  .legend-tooltip::after {
+     top: 100%; auto; left: 50%; transform: translateX(-50%);
+     border-width: 6px 6px 0 6px;
+     border-color: var(--bg-white) transparent transparent transparent;
   }
 }

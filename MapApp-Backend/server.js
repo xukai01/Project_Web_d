@@ -77,11 +77,29 @@ app.get('/api/categories', (req, res) => {
 
 
 // ==========================================
-// 1. DYNAMIC CATEGORY ROUTE
+// 1. DYNAMIC CATEGORY ROUTE (Unified)
 // ==========================================
 app.get('/api/categories/:categoryName', async (req, res) => {
   try {
-    const { categoryName } = req.params;
+    const categoryName = req.params.categoryName.toLowerCase();
+
+    // The Exception ('Professors')
+    if (categoryName === 'professors') {
+      const professorQuery = `
+        SELECT 
+            u.full_name, 
+            u.email,
+            p.designation, 
+            d.dept_name,
+            p.is_available
+        FROM professor_profiles p 
+        JOIN users u ON p.user_id = u.user_id 
+        LEFT JOIN departments d ON p.dept_id = d.dept_id 
+        WHERE u.user_type = 'professor'
+      `;
+      const [rows] = await db.query(professorQuery);
+      return res.json(rows);
+    }
 
     // Map frontend strings to exact database ENUMs
     const categoryMap = {
@@ -96,56 +114,88 @@ app.get('/api/categories/:categoryName', async (req, res) => {
       'services': ['library', 'health_center', 'atm', 'gate', 'parking']
     };
 
-    const locationTypes = categoryMap[categoryName.toLowerCase()];
+    const locationTypes = categoryMap[categoryName];
 
     // If the category is not fully supported or misspelled, return 400 Bad Request
     if (!locationTypes) {
       return res.status(400).json({ error: 'Bad Request: Invalid category mapping.' });
     }
 
-    // The mysql2 driver securely handles arrays passed into 'IN (?)' statements
-    const query = 'SELECT * FROM campus_locations WHERE location_type IN (?)';
-    const [rows] = await db.query(query, [locationTypes]);
+    // The SQL Query with spatial data and self-join
+    const locationQuery = `
+      SELECT 
+        c.location_id,
+        c.location_name,
+        c.description,
+        c.location_type,
+        c.parent_location_id,
+        ST_AsGeoJSON(c.boundary) AS geojson,
+        c.latitude,
+        c.longitude,
+        p.location_name AS parent_location_name
+      FROM campus_locations c
+      LEFT JOIN campus_locations p ON c.parent_location_id = p.location_id
+      WHERE c.location_type IN (?)
+    `;
 
+    const [rows] = await db.query(locationQuery, [locationTypes]);
     res.json(rows);
+
   } catch (error) {
     console.error('Database Error in GET /api/categories/:categoryName ->', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+// const authRoutes = require('./routes/auth');
+// app.use('/api/auth', authRoutes);
 // ==========================================
-// 2. SMART PROFESSORS ROUTE
+// 3. ADMIN LOCATIONS ROUTE
 // ==========================================
-app.get('/api/professors', async (req, res) => {
+app.post('/api/locations', async (req, res) => {
   try {
+    let { 
+      location_name, description, location_type, 
+      parent_location_id, floor_number, boundary, latitude, longitude 
+    } = req.body;
+
+    // Validate Required Fields
+    if (!location_name || !location_type || !boundary) {
+      return res.status(400).json({ error: 'Missing required fields: location_name, location_type, or boundary' });
+    }
+
+    // Sanitize optional inputs
+    description = description || null;
+    parent_location_id = parent_location_id || null;
+    floor_number = floor_number === '' || floor_number === undefined ? null : Number(floor_number);
+    latitude = latitude || null;
+    longitude = longitude || null;
+
+    // SQL Injection safe parameterized query using ST_GeomFromText for the polygon
+    // Note: ST_GeomFromText(?, 4326) sets the spatial reference to match the column configuration
     const query = `
-            SELECT 
-                u.full_name, 
-                p.designation, 
-                d.dept_name, 
-                b.building_name, 
-                b.latitude, 
-                b.longitude 
-            FROM professor_profiles p 
-            JOIN users u ON p.user_id = u.user_id 
-            LEFT JOIN departments d ON p.dept_id = d.dept_id 
-            LEFT JOIN buildings b ON d.building_id = b.building_id 
-            WHERE p.is_available = 1
-        `;
+      INSERT INTO campus_locations 
+        (location_name, description, location_type, parent_location_id, floor_number, boundary, latitude, longitude) 
+      VALUES 
+        (?, ?, ?, ?, ?, ST_GeomFromText(?, 4326), ?, ?)
+    `;
 
-    // No parameters needed since we are strictly filtering by 'is_available = 1'
-    const [rows] = await db.query(query);
+    const [result] = await db.query(query, [
+      location_name, description, location_type, 
+      parent_location_id, floor_number, boundary, latitude, longitude
+    ]);
 
-    res.json(rows);
+    res.status(200).json({ 
+      message: 'Location added successfully', 
+      location_id: result.insertId 
+    });
+
   } catch (error) {
-    console.error('Database Error in GET /api/professors ->', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Database Error in POST /api/locations ->', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
 
-// const authRoutes = require('./routes/auth');
-// app.use('/api/auth', authRoutes);
 // Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);

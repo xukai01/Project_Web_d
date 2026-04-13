@@ -55,19 +55,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Loop through data and generate prefab HTML
         dataArray.forEach(item => {
+            const isProfessor = categoryName.toLowerCase() === 'professors';
             // Determine name key. Ordinary locations use location_name, but professors use full_name.
-            const displayName = categoryName.toLowerCase() === 'professors' 
+            const displayName = isProfessor 
                 ? item.full_name 
                 : item.location_name || item.name || 'Unknown Location';
+                
+            const subtitleHtml = isProfessor 
+                ? `<div style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px; line-height: 1.2;">
+                      ${item.designation} &bull; ${item.dept_name} 
+                      ${item.is_available ? '<span style="color:#22c55e; margin-left: 5px;">&#9679; Available</span>' : '<span style="color:#ef4444; margin-left: 5px;">&#9679; Busy</span>'}
+                   </div>`
+                : '';
                 
             // Note: In an integrated app, we might also want to access item.latitude and item.longitude!
             const htmlString = `
                 <div class="sp-item-prefab">
                     <div class="sp-item-icon">
-                        <i class="fa-solid fa-location-dot"></i>
+                        <i class="fa-solid ${isProfessor ? 'fa-user-tie' : 'fa-location-dot'}"></i>
                     </div>
-                    <div class="sp-item-text">
-                        ${displayName}
+                    <div class="sp-item-text" style="display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-weight: 500;">${displayName}</div>
+                        ${subtitleHtml}
                     </div>
                 </div>
             `;
@@ -88,11 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Smart routing: if it's 'Professors', handle that special route
-            const isProfessor = categoryName.toLowerCase() === 'professors';
-            const endpoint = isProfessor 
-                ? 'http://10.240.167.136:5000/api/professors' 
-                : `http://10.240.167.136:5000/api/categories/${encodeURIComponent(categoryName.toLowerCase())}`;
+            const endpoint = `http://localhost:5000/api/categories/${encodeURIComponent(categoryName.toLowerCase())}`;
                 
             const response = await fetch(endpoint);
             if (!response.ok) throw new Error("Failed to fetch data from API.");

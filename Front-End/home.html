@@ -32,9 +32,12 @@
         </div>
 
         <header class="top-nav-layer">
-            <h1 class="app-logo">
-                <i class="fa-solid fa-map-location-dot"></i> Map My Campus
-            </h1>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h1 class="app-logo">
+                    <i class="fa-solid fa-map-location-dot"></i> Map My Campus
+                </h1>
+                <button id="admin-mode-toggle" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer; font-size: 0.8rem; font-weight:bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Admin Mode</button>
+            </div>
 
             <div class="search-panel">
                 <button class="icon-btn profile-btn" aria-label="Profile">
@@ -64,6 +67,18 @@
 
                 <input type="radio" id="toggle-events" name="main-toggle">
                 <label for="toggle-events">Events</label>
+            </div>
+            
+            <!-- Floor Legend 3D Building -->
+            <div class="building-legend" id="building-legend">
+               <div class="legend-tooltip" id="floor-tooltip"></div>
+               <div class="cube-stack" id="floor-cube-stack">
+                  <div class="cube-layer" data-floor="4th Floor" style="--floor-color: var(--floor-5-color); z-index: 5;"></div>
+                  <div class="cube-layer" data-floor="3rd Floor" style="--floor-color: var(--floor-4-color); z-index: 4;"></div>
+                  <div class="cube-layer" data-floor="2nd Floor" style="--floor-color: var(--floor-3-color); z-index: 3;"></div>
+                  <div class="cube-layer" data-floor="1st Floor" style="--floor-color: var(--floor-2-color); z-index: 2;"></div>
+                  <div class="cube-layer" data-floor="Ground Floor" style="--floor-color: var(--floor-1-color); z-index: 1;"></div>
+               </div>
             </div>
         </header>
 
@@ -183,9 +198,112 @@
         </div>
     </div>
 
+    <!-- ADMIN SIDE PANEL (Hidden by default) -->
+    <div class="sp-side-panel" id="side-panel-admin">
+        <div class="sp-panel-header">
+            <h3>Add New Campus Location</h3>
+            <button class="icon-btn sp-close-btn" aria-label="Close panel"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sp-panel-content">
+            <form id="admin-location-form" class="admin-form">
+                <div class="input-group">
+                    <label>Location Name *</label>
+                    <input type="text" id="admin-loc-name" required placeholder="e.g. Main Library">
+                </div>
+                <div class="input-group">
+                    <label>Location Type *</label>
+                    <select id="admin-loc-type" required>
+                        <option value="" disabled selected>Select Type</option>
+                        <option value="building">Building</option>
+                        <option value="classroom">Classroom</option>
+                        <option value="lab">Lab</option>
+                        <option value="office">Office</option>
+                        <option value="auditorium">Auditorium</option>
+                        <option value="library">Library</option>
+                        <option value="hostel">Hostel</option>
+                        <option value="shop">Shop</option>
+                        <option value="health_center">Health Center</option>
+                        <option value="parking">Parking</option>
+                        <option value="gate">Gate</option>
+                        <option value="washroom">Washroom</option>
+                        <option value="atm">ATM</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Parent Location (Optional)</label>
+                    <select id="parent-location-select">
+                        <option value="">None (Top Level)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Description (Optional)</label>
+                    <textarea id="description-input" rows="3" placeholder="Additional details..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Floor No. (Optional)</label>
+                    <input type="number" id="admin-floor-no" placeholder="e.g. 1">
+                </div>
+                <div class="input-group">
+                    <label>Boundary Polygon WKT *</label>
+                    <div style="font-size:0.75rem; color:#64748b; margin-bottom:5px;">
+                        (Use drawing tool)
+                    </div>
+                    <textarea id="admin-boundary" required rows="2" placeholder="POLYGON((...))" readonly style="background-color: #f1f5f9; cursor: not-allowed;"></textarea>
+                </div>
+                <button type="submit" class="admin-submit-btn" style="margin-bottom: 30px;">Save Location</button>
+            </form>
+        </div>
+    </div>
+
     <script src="panel.js"></script>
     <script src="home_js.js"></script>
     <script src="map.js"></script>
+
+    <!-- Temporary Admin Mode Initializer Sequence -->
+    <script>
+        const adminBtn = document.getElementById('admin-mode-toggle');
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === 'true';
+
+        if (adminBtn) {
+            adminBtn.addEventListener('click', () => {
+                if (isAdmin) {
+                    window.location.href = window.location.pathname; // Exit Admin
+                } else {
+                    window.location.href = window.location.pathname + '?admin=true'; // Enter Admin
+                }
+            });
+            if (isAdmin) {
+                adminBtn.textContent = "Exit Admin Mode";
+                adminBtn.style.background = "#334155";
+            }
+        }
+
+        // Dynamically inject Admin CSS and JS if mode is active
+        if (isAdmin) {
+            // Include Mapbox Draw SDK for Drawing Support
+            const drawCSS = document.createElement('link');
+            drawCSS.rel = 'stylesheet';
+            drawCSS.href = 'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.3/mapbox-gl-draw.css';
+            document.head.appendChild(drawCSS);
+
+            const drawJS = document.createElement('script');
+            drawJS.src = 'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.3/mapbox-gl-draw.js';
+            document.body.appendChild(drawJS);
+
+            const adminCSS = document.createElement('link');
+            adminCSS.rel = 'stylesheet';
+            adminCSS.href = 'admin.css';
+            document.head.appendChild(adminCSS);
+
+            // Wait briefly for the CDN script to load before loading admin logic
+            drawJS.onload = () => {
+                const adminJS = document.createElement('script');
+                adminJS.src = 'admin.js';
+                document.body.appendChild(adminJS);
+            };
+        }
+    </script>
 </body>
 
 </html>
