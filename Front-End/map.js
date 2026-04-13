@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Save location so Recenter button works globally
                     currentUserLocation = [userLng, userLat];
+                    window.currentLocation = currentUserLocation;
 
                     // Set strict map zooming limits around current view
                     myMap.setMinZoom(MIN_ZOOM_LEVEL);
@@ -73,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 (error) => {
                     console.warn("Location check failed or was denied. Falling back to NIT Kurukshetra.", error);
+                    window.currentLocation = currentUserLocation; // Export fallback
                     // Set boundaries relative to NIT Kurukshetra fallback
                     myMap.setMinZoom(MIN_ZOOM_LEVEL);
                     const swBound = [76.9700 - MAX_BOUNDS_OFFSET, 29.3900 - MAX_BOUNDS_OFFSET];

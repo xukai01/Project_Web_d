@@ -196,9 +196,45 @@ app.post('/api/locations', async (req, res) => {
   }
 });
 
+// ==========================================
+// 4. SEARCH ROUTE
+// ==========================================
+app.get('/api/search', async (req, res) => {
+  try {
+    const keyword = req.query.q;
+    if (!keyword) {
+      return res.json([]);
+    }
+
+    const searchQuery = `
+      SELECT 
+        location_id, 
+        location_name, 
+        description, 
+        location_type, 
+        COALESCE(latitude, ST_X(ST_Centroid(ST_SRID(boundary, 0)))) AS latitude, 
+        COALESCE(longitude, ST_Y(ST_Centroid(ST_SRID(boundary, 0)))) AS longitude 
+      FROM campus_locations 
+      WHERE 
+        location_name LIKE ? OR 
+        description LIKE ? OR 
+        location_type LIKE ?
+      LIMIT 10
+    `;
+    const searchString = `%${keyword}%`;
+    const [rows] = await db.query(searchQuery, [searchString, searchString, searchString]);
+    
+    res.json(rows);
+  } catch (error) {
+    console.error('Database Error in GET /api/search ->', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

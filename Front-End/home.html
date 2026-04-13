@@ -44,7 +44,7 @@
                     <i class="fa-solid fa-circle-user"></i>
                 </button>
 
-                <input type="text" class="search-input" placeholder="Search rooms, labs, professors...">
+                <input type="text" id="main-search-input" class="search-input" placeholder="Search rooms, labs, professors..." autocomplete="off">
 
                 <button class="icon-btn search-btn" aria-label="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -59,6 +59,8 @@
                 <div class="categories-dropdown" id="categories-dropdown">
                     <!-- Categories will be dynamically injected here -->
                 </div>
+                
+                <ul id="search-results" class="search-results-dropdown" style="display: none;"></ul>
             </div>
 
             <div class="panel-toggle top-panel-toggle">
@@ -258,6 +260,7 @@
     <script src="panel.js"></script>
     <script src="home_js.js"></script>
     <script src="map.js"></script>
+    <script src="search.js"></script>
 
     <!-- Temporary Admin Mode Initializer Sequence -->
     <script>
