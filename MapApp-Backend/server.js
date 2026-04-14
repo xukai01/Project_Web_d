@@ -5,7 +5,31 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const express = require("express");
+const mysql = require("mysql2");
+const cors = require("cors");
 
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// ✅ DATABASE CONNECTION
+const db = mysql.createConnection({
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
+});
+
+db.connect((err) => {
+  if (err) {
+    console.log("❌ DB connection failed:", err);
+  } else {
+    console.log("✅ Connected to Railway MySQL");
+  }
+});
 // 1. Enable CORS for frontend
 app.use(cors());
 
