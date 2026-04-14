@@ -5,7 +5,7 @@ const router = express.Router();
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
-const { Resend } = require('resend');
+const { Resend } = require('resend'); 
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
