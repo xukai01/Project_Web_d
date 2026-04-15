@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000'; // Change to live cloud URL when deployed to production (e.g., Vercel)
+const API_BASE_URL = 'https://projectcode-production.up.railway.app'; // Change to live cloud URL when deployed to production (e.g., Vercel)
 
 document.addEventListener('DOMContentLoaded', () => {
   
