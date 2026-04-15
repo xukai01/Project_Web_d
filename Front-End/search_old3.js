@@ -14,7 +14,7 @@ const window_extended = window;
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('main-search-input');
     const searchResults = document.getElementById('search-results');
-    const API_BASE_URL = 'http://localhost:5000'; // Match other files
+    const API_BASE_URL = 'https://projectcode-production.up.railway.app'; // Match other files
     const OLA_MAPS_API_KEY = '5W9Ss6Rd7OFwQ4ehIXshZCcci0sDpngDos1MOYe3'; // from map.js
 
     // Debounce wrapper
