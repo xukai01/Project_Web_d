@@ -704,7 +704,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
+
+
+        if (adminKeyForm) {
+        adminKeyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAllErrors();
+
+            const adminKey = document.getElementById('admin-key-input').value.trim();
+            if(!adminKey) { showError('admin-key-input', 'Admin key is required'); return; }
+
+            try {
+                const response = await fetch('${API_BASE_URL}/api/auth/verify-admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ admin_key: adminKey })
+                });
+
+                if (response.ok) {
+                    window.location.href = 'home.html?admin=true';
+                } else {
+                    const data = await response.json().catch(() => ({}));
+                    showError('admin-key-input', data.message || 'Verification failed. Incorrect admin key.');
+                }
+            } catch (error) {
+                console.error('Admin verification error:', error);
+                showError('admin-key-input', 'Connection error. Check server.');
+            }
+        });
+    }
     // =============================================
     // CHECK IF ALREADY LOGGED IN
     // =============================================
